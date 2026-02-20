@@ -55,7 +55,7 @@ public class Client {
                 @Override
                 @NullMarked
                 public Type getPayloadType(StompHeaders headers) {
-                    return AlertTask.class; // Ensure this DTO matches the server
+                    return AlertTask.class;
                 }
 
                 @Override
@@ -73,7 +73,7 @@ public class Client {
     }
 
     private void triggerLocalAction(AlertTask alert) {
-        log.info("\uD83D\uDEA8 {} - in {}", alert.getTitle(), alert.getType());
+        log.info("ALERT: {} - in {}", alert.getTitle(), alert.getType().message());
         blastMacAlert(alert.getTitle(), alert.getType());
     }
 
@@ -109,6 +109,10 @@ public class Client {
         if (iconPath != null) {
             script = String.format(
                 """
+                set x to output volume of (get volume settings)
+                set volume output volume 80
+                do shell script "afplay /System/Library/Sounds/Glass.aiff"
+                set volume output volume x
                 tell app "System Events" to display dialog "%s" \
                     with title "Meeting Alert" \
                     buttons {"Dismiss", "Open Calendar"} \
@@ -120,6 +124,10 @@ public class Client {
         } else {
             script = String.format(
                 """
+                set x to output volume of (get volume settings)
+                set volume output volume 80
+                do shell script "afplay /System/Library/Sounds/Glass.aiff"
+                set volume output volume x
                 tell app "System Events" to display dialog "%s" \
                     with title "Meeting Alert" \
                     buttons {"Dismiss", "Open Calendar"} \
