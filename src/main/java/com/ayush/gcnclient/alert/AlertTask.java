@@ -1,4 +1,4 @@
-package com.ayush.gcnclient;
+package com.ayush.gcnclient.alert;
 
 import lombok.Data;
 

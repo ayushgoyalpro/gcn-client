@@ -1,5 +1,9 @@
 spring:
   application:
     name: gcn-client
+
 server:
   port: 8081
+
+gcn-server:
+  url: ${SERVER_URL}

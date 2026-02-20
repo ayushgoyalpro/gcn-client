@@ -1,9 +1,12 @@
-package com.ayush.gcnclient;
+package com.ayush.gcnclient.service;
 
+import com.ayush.gcnclient.alert.AlertTask;
+import com.ayush.gcnclient.alert.AlertType;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.NullMarked;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.messaging.converter.JacksonJsonMessageConverter;
 import org.springframework.messaging.simp.stomp.StompCommand;
 import org.springframework.messaging.simp.stomp.StompFrameHandler;
@@ -27,14 +30,14 @@ import java.nio.file.StandardCopyOption;
 
 @Slf4j
 @Service
-public class MeetingClientService {
+public class Client {
 
-    private final String URL = "wss://google-calendar-notifications.onrender.com/ws-calendar";
+    @Value("${gcn-server.url}")
+    private String URL;
     private String cachedIconPath;
 
     @PostConstruct
     public void connect() {
-        blastMacAlert("Starting Meeting Client...", AlertType.STARTING_NOW);
         WebSocketStompClient stompClient = new WebSocketStompClient(new StandardWebSocketClient());
         stompClient.setMessageConverter(new JacksonJsonMessageConverter());
         StompSessionHandler sessionHandler = new MyStompSessionHandler();
