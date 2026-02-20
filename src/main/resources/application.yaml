@@ -6,4 +6,4 @@ server:
   port: 8081
 
 gcn-server:
-  url: ${SERVER_URL}
+  url: ${GCN_SERVER_URL}

@@ -38,6 +38,7 @@ public class Client {
 
     @PostConstruct
     public void connect() {
+        blastMacAlert("GCN Client Started", AlertType.STARTING_NOW);
         WebSocketStompClient stompClient = new WebSocketStompClient(new StandardWebSocketClient());
         stompClient.setMessageConverter(new JacksonJsonMessageConverter());
         StompSessionHandler sessionHandler = new MyStompSessionHandler();
