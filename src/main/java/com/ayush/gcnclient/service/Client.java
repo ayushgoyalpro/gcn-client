@@ -83,22 +83,7 @@ public class Client {
         String script = getScript(title, type, iconPath);
 
         try {
-            Process b = new ProcessBuilder("osascript", "-e", script).start();
-
-            // Listen for the button click
-            new Thread(() -> {
-                try {
-                    BufferedReader reader = new BufferedReader(new InputStreamReader(b.getInputStream()));
-                    String response = reader.readLine();
-                    if (response != null && response.contains("Open Calendar")) {
-                        String[] command = {"open", "https://calendar.google.com"};
-                        Runtime.getRuntime().exec(command);
-                    }
-                } catch (Exception e) {
-                    log.error(e.getMessage(), e);
-                }
-            }).start();
-
+            new ProcessBuilder("osascript", "-e", script).start();
         } catch (IOException e) {
             log.error(e.getMessage(), e);
         }
@@ -106,39 +91,38 @@ public class Client {
 
     private static @NonNull String getScript(String title, AlertType type, String iconPath) {
         String message = title + " - " + type.message() + "\n\n\n\n\n\n\n";
-        String script;
-        if (iconPath != null) {
-            script = String.format(
-                """
-                set x to output volume of (get volume settings)
+        String iconLine = (iconPath != null)
+            ? String.format("with icon POSIX file \"%s\"", iconPath)
+            : "with icon caution";
+
+        return String.format(
+            """
+            set x to output volume of (get volume settings)
+            try
                 set volume output volume 80
                 do shell script "afplay /System/Library/Sounds/Glass.aiff"
-                set volume output volume x
-                tell app "System Events" to display dialog "%s" \
-                    with title "Meeting Alert" \
-                    buttons {"Dismiss", "Open Calendar"} \
-                    default button "Open Calendar" \
-                    with icon POSIX file "%s"
-                """,
-                message, iconPath
-            );
-        } else {
-            script = String.format(
-                """
-                set x to output volume of (get volume settings)
-                set volume output volume 80
-                do shell script "afplay /System/Library/Sounds/Glass.aiff"
-                set volume output volume x
-                tell app "System Events" to display dialog "%s" \
-                    with title "Meeting Alert" \
-                    buttons {"Dismiss", "Open Calendar"} \
-                    default button "Open Calendar" \
-                    with icon caution
-                """,
-                message
-            );
-        }
-        return script;
+            end try
+            set volume output volume x
+            
+            tell application "System Events"
+                set frontmost of process "Finder" to true
+            end tell
+        
+            tell application "Finder"
+                activate
+                set myDialog to display dialog "%s" ¬
+                    with title "Meeting Alert" ¬
+                    buttons {"Dismiss", "Open Calendar"} ¬
+                    default button "Open Calendar" ¬
+                    %s
+            end tell
+            
+            if button returned of myDialog is "Open Calendar" then
+                open location "https://calendar.google.com"
+            end if
+            """,
+            message, iconLine
+        );
     }
 
     private String resolveAppIconPath() {
