@@ -1,4 +1,4 @@
-package com.ayush.gcnclient.service;
+package com.ayush.gcnclient.handlers;
 
 import com.ayush.gcnclient.alert.Alert;
 import lombok.extern.slf4j.Slf4j;
@@ -12,7 +12,7 @@ import java.nio.file.StandardCopyOption;
 
 @Slf4j
 @Service
-public class MacNotificationService implements AlertHandler {
+public class MacNotificationHandler implements AlertHandler {
     private String cachedIconPath;
 
     @Override

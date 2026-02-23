@@ -1,4 +1,4 @@
-package com.ayush.gcnclient.service;
+package com.ayush.gcnclient.handlers;
 
 import com.ayush.gcnclient.alert.Alert;
 

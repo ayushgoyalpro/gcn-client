@@ -1,6 +1,7 @@
 package com.ayush.gcnclient.service;
 
 import com.ayush.gcnclient.alert.Alert;
+import com.ayush.gcnclient.handlers.AlertHandler;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 import lombok.extern.slf4j.Slf4j;
@@ -27,7 +28,7 @@ import java.util.concurrent.ScheduledFuture;
 @Slf4j
 @Component
 @SuppressWarnings("NullableProblems")
-public class WebSocketConnectionManager {
+public class ConnectionManager {
 
     @Value("${gcn-server.url}")
     private String url;
@@ -43,7 +44,7 @@ public class WebSocketConnectionManager {
     private final TaskScheduler loggingScheduler = new LoggingTaskScheduler(scheduler);
     private final List<AlertHandler> alertHandlers = new CopyOnWriteArrayList<>();
 
-    public WebSocketConnectionManager(Collection<AlertHandler> alertHandlers) {
+    public ConnectionManager(Collection<AlertHandler> alertHandlers) {
         this.alertHandlers.addAll(alertHandlers);
     }
 
