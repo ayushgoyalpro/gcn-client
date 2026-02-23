@@ -6,4 +6,6 @@ server:
   port: 8081
 
 gcn-server:
+  receive-timeout-seconds: 5
   url: ${GCN_SERVER_URL}
+  personal-key: meetings
